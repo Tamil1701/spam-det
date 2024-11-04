@@ -54,6 +54,3 @@ The Spam Detection System is a versatile application developed to help users ide
 - **Flask Documentation**: [https://flask.palletsprojects.com/](https://flask.palletsprojects.com/)
 - **scikit-learn Documentation**: [https://scikit-learn.org/](https://scikit-learn.org/)
 - **Naive Bayes Classifier**: [https://en.wikipedia.org/wiki/Naive_Bayes_classifier](https://en.wikipedia.org/wiki/Naive_Bayes_classifier)
-```
-
-This README file contains all necessary details and is ready for you to copy into a `README.md` file. Let me know if there’s anything else you’d like to add!
