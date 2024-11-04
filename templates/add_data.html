@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Data for Training</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f7fa;
+            color: #01579b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        h2 {
+            color: #0277bd;
+            margin-bottom: 20px;
+        }
+
+        /* Form styling */
+        form {
+            background-color: #ffffff;
+            border: 2px solid #0288d1;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            color: #0288d1;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 15px;
+            border: 1px solid #b3e5fc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #0288d1;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0277bd;
+        }
+
+        /* Back link styling */
+        a {
+            color: #0277bd;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Popup container */
+        #add_data_popup {
+            visibility: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* Popup box */
+        #add_data_popupContent {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            width: 300px;
+            animation: fadeIn 1s ease;
+            border: 2px solid #0288d1;
+            color: #01579b;
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Loading animation */
+        .add_data_loading {
+            font-size: 18px;
+            color: #0288d1;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0.5; }
+        }
+
+        /* Success message styling */
+        .add_data_success {
+            font-size: 24px;
+            color: #388e3c;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Add New Message for Training</h2>
+    <form action="{{ url_for('add_data') }}" method="POST">
+        <label for="add_data_message">Message:</label>
+        <input type="text" id="add_data_message" name="message" required>
+
+        <label for="add_data_label">Class:</label>
+        <select id="add_data_label" name="label">
+            <option value="ham">Ham (Not Spam)</option>
+            <option value="spam">Spam</option>
+        </select>
+
+        <input type="submit" value="Add Message">
+    </form>
+
+    <a href="{{ url_for('home') }}">Back to Home</a>
+
+    <!-- Popup for Success Message -->
+    <div id="add_data_popup">
+        <div id="add_data_popupContent">
+            <div id="add_data_loadingMessage" class="add_data_loading">Training data...</div>
+            <div id="add_data_successMessage" class="add_data_success" style="display: none;">
+                🎉 Successfully trained!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show the popup with a loading animation and then display success message
+        function showAddDataPopup() {
+            const popup = document.getElementById("add_data_popup");
+            const loadingMessage = document.getElementById("add_data_loadingMessage");
+            const successMessage = document.getElementById("add_data_successMessage");
+
+            // Show the popup
+            popup.style.visibility = "visible";
+
+            // After 2 seconds, hide loading and show success message
+            setTimeout(() => {
+                loadingMessage.style.display = "none";
+                successMessage.style.display = "block";
+            }, 2000);
+
+            // Hide the popup after an additional 1.5 seconds (total 3.5 seconds)
+            setTimeout(() => {
+                popup.style.visibility = "hidden";
+            }, 3500);
+        }
+
+        // Trigger the popup display after form submission
+        document.querySelector("form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission to stay on the same page
+            fetch("{{ url_for('add_data') }}", {
+                method: "POST",
+                body: new FormData(this)
+            }).then(() => {
+                showAddDataPopup();
+            });
+        });
+
+
+        function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // Populate the text box if "message" parameter exists
+    // window.onload = function() {
+    //     const message = getQueryParam("message");
+    //     if (message) {
+    //         document.getElementById("add_data_message").value = message;
+    //     }
+    // };
+
+    const trainMessage = sessionStorage.getItem("trainMessage");
+        if (trainMessage) {
+            // Populate the message input with trainMessage
+            document.getElementById("add_data_message").value = trainMessage;
+
+            // Optionally, clear the stored message after use
+            sessionStorage.removeItem("trainMessage");}
+    </script>
+</body>
+</html>

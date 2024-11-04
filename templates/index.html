@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Spam Detection System</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  
+  <style>
+    /* Additional styles for layout */
+    /* .textarea-container {
+      position: relative;
+    }
+    .paste-button {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background-color: #2a9df4;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    } */
+  </style>
+</head>
+
+<body>
+
+<!-- Navigation Bar -->
+
+
+
+<!-- Modal Structure -->
+<div id="myMessageModal" class="my-modal my-hidden">
+    <div class="my-modal-content">
+        {% if prediction == 1 %}
+            <h2 style="color:red;">Looking Spam⚠️, Be safe</h2>
+        {% elif prediction == 0 %}
+            <h2 style="color:green;"><b>Not a Spam💚</b></h2>
+        {% endif %}
+        <p id="result_message" style="color:black ;"></p>
+        <button id="myCloseMessageBtn">Close</button>
+        <button id="train_button">Train with this message</button>
+    </div>
+</div>
+
+<div class="login">
+    <h1>Spam⚠️ Detector for Email📧</h1>
+
+    <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data">
+        <div class="textarea-container">
+            <!-- Retain text in the textarea using server-side variable -->
+            <textarea id="message" name="message" rows="6" cols="50" required="required">{{ request.form.get('message') }}</textarea>
+            <button type="button" class="paste-button" onclick="pasteFromClipboard()">Paste</button>
+        </div>
+        <br>
+
+        <!-- File Upload Section -->
+        <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(this)" />
+        <!-- <button type="button" onclick="loadEmailContent()" class="btn btn-secondary">Import from Gmail</button> -->
+        <button type="button" onclick="clearText()" class="btn btn-secondary">Clear</button>
+
+        <br><br>
+        <button type="submit" class="btn btn-primary btn-block btn-large prediction-btn">Predict</button>
+        <div id="modalOverlay" onclick="closeModal()" style="display: none;"></div>
+        <div id="resultModal" style="display: none;">
+            <h2 id="resultMessage"></h2>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    let trimmedMessage = "";
+
+    function handleFileUpload(fileInput) {
+        const file = fileInput.files[0];
+        const messageBox = document.getElementById('message');
+
+        // Check file size (4 MB limit)
+        if (file.size > 4 * 1024 * 1024) {
+            alert("File size exceeds 4 MB. Please upload a smaller file.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            messageBox.value = e.target.result; // Automatically paste text into the textarea
+        };
+        reader.readAsText(file);
+    }
+
+    function pasteFromClipboard() {
+        navigator.clipboard.readText()
+            .then(text => {
+                document.getElementById('message').value = text; // Paste clipboard text into textarea
+            })
+            .catch(err => {
+                console.error('Failed to read clipboard contents: ', err);
+            });
+    }
+
+    function clearText() {
+        document.getElementById('message').value = '';
+    }
+
+    function showMessage() {
+        const resultMessage = document.getElementById("result_message");
+        const messageText = "{{mess}}";
+        trimmedMessage = messageText.substring(6, messageText.length - 6);
+        
+        if (trimmedMessage.length > 200) {
+            const trimmedMessage2 = trimmedMessage.substring(0, 200) + "..."; // Add "..." if it exceeds 200 characters
+            resultMessage.textContent = `${trimmedMessage2}`;
+          }
+        else{
+          resultMessage.textContent = `${trimmedMessage}`;
+        }
+        document.getElementById('myMessageModal').style.display = 'flex'; // Show the modal
+        document.getElementById('myMessageModal').classList.remove('my-hidden');
+    }
+
+    document.getElementById('myCloseMessageBtn').addEventListener('click', function() {
+        // Reset the page
+        window.location.href = "/";
+    });
+
+    var predictionExists = "{{prediction}}";
+    console.log("Prediction exists: ", predictionExists);
+    // Automatically show the message if prediction exists
+    window.onload = function() {
+        if (predictionExists) {
+            showMessage();
+        }
+    };
+
+    document.getElementById("train_button").onclick = function() {
+        // Store the trimmed message in session storage and redirect to add data page
+        sessionStorage.setItem("trainMessage", trimmedMessage);
+        window.location.href = "{{ url_for('add_data') }}";
+    };
+
+   
+</script>
+</body>
+</html>
