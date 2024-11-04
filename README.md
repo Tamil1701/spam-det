@@ -18,8 +18,7 @@ The Spam Detection System is a machine learning-powered application designed to 
 
 1. **Clone this repository**:
    ```bash
-   git clone <repository_url>
-   cd <repository_directory>
+   git clone https://github.com/Tamil1701/spam-det.git
    ```
 
 2. **Install the required packages**:
