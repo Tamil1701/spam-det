@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, make_response
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 import os
 import numpy as np
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.secret_key = '123989'  # Set a secret key for session management
+CORS(app, supports_credentials=True)
 
 # Initialize global variables for the model and vectorizer
 clf = None
@@ -40,6 +42,12 @@ def load_and_train_model():
         print(f"Model trained with {len(df)} entries.")
     except Exception as e:
         print(f"Error loading or training model: {e}")
+
+@app.after_request
+def add_csp(response):
+    # This allows any origin to embed your site in an iframe
+    response.headers['Content-Security-Policy'] = "frame-ancestors *"
+    return response
 
 @app.route('/')
 def home():
