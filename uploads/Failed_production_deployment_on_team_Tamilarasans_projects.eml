@@ -1,0 +1,276 @@
+Delivered-To: tamilarasanselvam1701@gmail.com
+Received: by 2002:a59:cde2:0:b0:4c5:40b8:45e4 with SMTP id b2csp6181664vqx;
+        Mon, 28 Apr 2025 21:05:50 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGXp5aKOou05mjYmi02cvEfTNaDmKR7BHUZdmIXzZgvQd0WIhn9OmCsrEtZaTt8IHl+/DIN
+X-Received: by 2002:a05:6a21:c91:b0:1ee:d06c:cddc with SMTP id adf61e73a8af0-2046a646a66mr17208770637.30.1745899549735;
+        Mon, 28 Apr 2025 21:05:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1745899549; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Dib/BhXX0851ZkhQAGtwmzic0e+UrmXFqkZBU/CNWjxLrOI+xllLgZocIhtClNAfXr
+         rk9jMzbB+lRtSjgf2QzmbxBowPDOuC2MrZiTjVTzfqiDHtrqfwmB1ORusn8ooqRXUBWs
+         i2BxuGPMNaE1oam9QLCxpKTpJ7CAbX7MOebuEhEwUyOYhiI+4/hCDTuReoRvzUN92GWH
+         CvVJB2OLpCKkcPyixTzJuS4GW4SdVoXTb1poH/IRDjO+NQ1s803DwzMwr0Dia87vOaZI
+         SOVIv2Um5IjjSj29D+5oJTcp68kmt8m6xFwTwh6KxVHl8vFKPSLVS+e8I1xkKrlHN51X
+         lD0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=feedback-id:date:message-id:mime-version:subject:to:reply-to:from
+         :dkim-signature:dkim-signature;
+        bh=DkqUyWtSOxVEyG4Ac277DvkNLGoAMPcGfL6UpY4fZLY=;
+        fh=vSV2K1TcJdBT/8bSvz7LTG//tnIkXwvvAdq6rWKS4Uo=;
+        b=EewKs+2nq2VvxirRQk/HI23l4UHUdhtdJyVijGGyfN82NMVeWRmJ/HxONMuf7DKk+0
+         E4+Q7LM9/no9biqf8r/nA465rS9jBwp76VJDUPhD0mGWZpFM6MtuA0TRnJpOXo/e5Wg3
+         EcHDXvopW1vKOJEe4fJUZffF58WkJ0hDn55i6lYhpQ9YDbxrXEzgUWY8ejeLGipIqiqC
+         uKSnOlpJ6DTxeJK0ngbuQvjGr1PS/AvZc921Qg9HLekX4InMTGRW2wAjpNOZBCVoWwF8
+         JY6MBh0qbSxve+8rm62lnzTiz8W1fgD7FPbg/rwLyXJ5Rgc+bRGUugGusWrCWfC3PEbT
+         VbqQ==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@vercel.com header.s=pfjykxhbqgiztpb5slbqcxhyhjqr3nva header.b=SjNm6MmX;
+       dkim=pass header.i=@amazonses.com header.s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx header.b=ioVjhIaH;
+       spf=pass (google.com: domain of 010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@mail.vercel.com designates 23.251.237.243 as permitted sender) smtp.mailfrom=010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@mail.vercel.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=vercel.com
+Return-Path: <010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@mail.vercel.com>
+Received: from e237-243.smtp-out.us-west-2.amazonses.com (e237-243.smtp-out.us-west-2.amazonses.com. [23.251.237.243])
+        by mx.google.com with ESMTPS id 41be03b00d2f7-b15fb0db57asi14159075a12.422.2025.04.28.21.05.49
+        for <tamilarasanselvam1701@gmail.com>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Apr 2025 21:05:49 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@mail.vercel.com designates 23.251.237.243 as permitted sender) client-ip=23.251.237.243;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@vercel.com header.s=pfjykxhbqgiztpb5slbqcxhyhjqr3nva header.b=SjNm6MmX;
+       dkim=pass header.i=@amazonses.com header.s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx header.b=ioVjhIaH;
+       spf=pass (google.com: domain of 010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@mail.vercel.com designates 23.251.237.243 as permitted sender) smtp.mailfrom=010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@mail.vercel.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=vercel.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=pfjykxhbqgiztpb5slbqcxhyhjqr3nva; d=vercel.com; t=1745899549;
+	h=From:Reply-To:To:Subject:MIME-Version:Content-Type:Message-ID:Date;
+	bh=FGiEEgPwz0JpZWruxeEJPK1GDH9rDYSKUhdjBAXKUYg=;
+	b=SjNm6MmXIFTa2gGNOc6pV501oHuDNrq5lzT/nZ2eP2IFwatp3Ue5a6ZXN8j35dPz
+	N1qHBcLbU6vbTsQ+ygn48uyrtVi4KT12ofzwT5EgXhrPpjz1dcomhLecJd2Nfn8QRMw
+	Ef/t9ixfwONfA8fwZqEnF0a/vapxXg8Jg+htQuB3LLtBDRTirM6anZNDh5/f1MubPhg
+	lqhyFqOrVbVgTQM8SYasvLHSykpykQBJs8h24hN/+B3ZbauB1Uc/n7u9w8ewB5lLS39
+	yk9u6qCww/um+MU1TEWGGMdPGtb27lbJb6wHZJc8eVtu9G1fCVL8u1aqDJftAf2z5PE
+	p4Gs2X35Mw==
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx; d=amazonses.com; t=1745899549;
+	h=From:Reply-To:To:Subject:MIME-Version:Content-Type:Message-ID:Date:Feedback-ID;
+	bh=FGiEEgPwz0JpZWruxeEJPK1GDH9rDYSKUhdjBAXKUYg=;
+	b=ioVjhIaHDGrw+Lsr9JE0MwCIZdcQjoLqhpDBPCQXL/UL4KXjQ2WLO0Q6zH9A1Prk
+	5iEuKPyNGASjzC1/sOIS+KS+M3IyPs+14Fr6RO2fyXpwDgY1RGbCfi55+m6PA4Dc05R
+	VdMBg02CTDEyTO0HdFMzry/Q4qBjjTv2ZCgwMjIo=
+From: Vercel <notifications@vercel.com>
+Reply-To: no-reply@vercel.com
+To: tamilarasanselvam1701@gmail.com
+Subject: Failed production deployment on team 'Tamilarasan's projects'
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_670673_846776991.1745899549299"
+Message-ID: <010101967fb8f273-89b0b305-8b5a-4240-85c5-0786099857c4-000000@us-west-2.amazonses.com>
+Date: Tue, 29 Apr 2025 04:05:49 +0000
+Feedback-ID: ::1.us-west-2.FoOqCThWXVf6UxtlBCXjpN6DawGbMccagHDueWriYXM=:AmazonSES
+X-SES-Outgoing: 2025.04.29-23.251.237.243
+
+------=_Part_670673_846776991.1745899549299
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+
+Hey tamil1701,
+ completed an activity.
+Something happened that you should be aware of.
+Thanks,
+The team @=20
+
+
+--
+
+
+If you've got questions, ask us in https://e1.knock.app/t/eyJhbGciOiJIUzI1N=
+iIsInR5cCI6IkpXVCJ9.eyJoc3QiOiJlMS5rbm9jay5hcHAiLCJpYXQiOjE3NDU4OTk1NDkxNzE=
+yNTQsImlkeCI6MCwibWlkIjoiMndPNHphNVhEdkdDajZmakVLdDZnTG1pbDAwIiwidXJsIjoiaH=
+R0cHM6Ly92ZXJjZWwuY29tbXVuaXR5LyJ9.APjmS_uNZBuXpCFRZyeFYlZf50gA-jF-EFw39xg5=
+ADE
+
+Copyright =C2=A9 2025 Vercel Inc. All rights reserved.
+440 N Barranca Ave #4133 Covina, CA 91723
+
+
+
+
+------=_Part_670673_846776991.1745899549299
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<html><body><table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpaddin=
+g=3D"0" style=3D"width:100%!important"><tbody><tr><td align=3D"center"><tab=
+le width=3D"600" border=3D"0" cellspacing=3D"0" cellpadding=3D"40" style=3D=
+"border:1px solid #eaeaea;border-radius:5px;margin:40px 0"><tbody><tr><td a=
+lign=3D"center"><div style=3D"font-family:-apple-system,BlinkMacSystemFont,=
+&#39;Segoe UI&#39;,&#39;Roboto&#39;,&#39;Oxygen&#39;,&#39;Ubuntu&#39;,&#39;=
+Cantarell&#39;,&#39;Fira Sans&#39;,&#39;Droid Sans&#39;,&#39;Helvetica Neue=
+&#39;,sans-serif;text-align:left;width:465px"><table width=3D"100%" border=
+=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"width:100%!important"><=
+tbody><tr><td align=3D"center"><div style=3D"margin-bottom:10px"><img src=
+=3D"https://assets.vercel.com/email/vercel.png" width=3D"40" height=3D"36" =
+alt=3D"Vercel"/></div></td></tr></tbody></table><table id=3D"f7703adb-37ae-=
+43ec-a17e-0ee91db4df64" class=3D"block-row block-row--markdown-v1" width=3D=
+"100%" cellpadding=3D"0" cellspacing=3D"0"><tr class=3D"block-row__row"><td=
+ class=3D"block-row__cell" style=3D"padding-bottom: 0px; padding-left: 4px;=
+ padding-right: 4px; padding-top: 0px;"><table width=3D"100%" cellpadding=
+=3D"0" cellspacing=3D"0"><tr><td class=3D"block-markdown"><p style=3D"color=
+: #000; font-family: Geist,-apple-system,system-ui,BlinkMacSystemFont,&quot=
+;Segoe UI&quot; ,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&=
+quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Hel=
+vetica Neue&quot;,sans-serif; font-size: 14px; line-height: 24px; overflow-=
+wrap: anywhere;"><span class=3D"break-all" style=3D"color: #000; font-famil=
+y: Geist,-apple-system,system-ui,BlinkMacSystemFont,&quot;Segoe UI&quot; ,&=
+quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quo=
+t;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,=
+sans-serif; font-size: 14px; line-height: 24px; word-break: break-all;">Hi =
+tamil1701,</span></p><span></span><p style=3D"color: #000; font-family: Gei=
+st,-apple-system,system-ui,BlinkMacSystemFont,&quot;Segoe UI&quot; ,&quot;R=
+oboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&qu=
+ot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-s=
+erif; font-size: 14px; line-height: 24px; overflow-wrap: anywhere;">
+There was an error deploying <strong style=3D"color: #000; font-weight: bol=
+d;">v0-tamil-nadu-ration-system</strong> to the production environment on <=
+strong style=3D"color: #000; font-weight: bold;">Tamilarasan&#39;s projects=
+</strong>.</p><p style=3D"color: #000; font-family: Geist,-apple-system,sys=
+tem-ui,BlinkMacSystemFont,&quot;Segoe UI&quot; ,&quot;Roboto&quot;,&quot;Ox=
+ygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&=
+quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif; font-size: 14p=
+x; line-height: 24px; overflow-wrap: anywhere;"><a href=3D"https://e1.knock=
+.app/t/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJoc3QiOiJlMS5rbm9jay5hcHAiLCJ=
+pYXQiOjE3NDU4OTk1NDkxNzIxNzAsImlkeCI6MCwibWlkIjoiMndPNHphNVhEdkdDajZmakVLdD=
+ZnTG1pbDAwIiwidXJsIjoiaHR0cHM6Ly92ZXJjZWwuY29tL3RhbWlsYXJhc2Fucy1wcm9qZWN0c=
+y1hMDA2MTlhYi92MC10YW1pbC1uYWR1LXJhdGlvbi1zeXN0ZW0vSEdncHo2ZkxyNmUyZFNTcUFk=
+M2FVUWNaOXhkbiJ9.IwtWaHEPrGijwl8-gRQ39JQq1NMJDY7Fck0-RIU9g7Q" style=3D"colo=
+r: #067df7; text-decoration: none;">See deployment details</a></p><span></s=
+pan><p style=3D"color: #000; font-family: Geist,-apple-system,system-ui,Bli=
+nkMacSystemFont,&quot;Segoe UI&quot; ,&quot;Roboto&quot;,&quot;Oxygen&quot;=
+,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&quot;Droid=
+ Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif; font-size: 14px; line-he=
+ight: 24px; overflow-wrap: anywhere;"></p></td></tr></table></td></tr></tab=
+le><hr style=3D"border:none;border-top:1px solid #eaeaea;margin:26px 0;widt=
+h:100%"/><p style=3D"color: #666666; font-family: Geist,-apple-system,syste=
+m-ui,BlinkMacSystemFont,&quot;Segoe UI&quot; ,&quot;Roboto&quot;,&quot;Oxyg=
+en&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fira Sans&quot;,&qu=
+ot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif; font-size: 14px;=
+ line-height: 24px; overflow-wrap: anywhere;">If you=E2=80=99ve got questio=
+ns, ask us in the <a href=3D"https://e1.knock.app/t/eyJhbGciOiJIUzI1NiIsInR=
+5cCI6IkpXVCJ9.eyJoc3QiOiJlMS5rbm9jay5hcHAiLCJpYXQiOjE3NDU4OTk1NDkxNzI1MjksI=
+mlkeCI6MCwibWlkIjoiMndPNHphNVhEdkdDajZmakVLdDZnTG1pbDAwIiwidXJsIjoiaHR0cHM6=
+Ly92ZXJjZWwuY29tbXVuaXR5P3V0bV9tZWRpdW09ZW1haWwmdXRtX3NvdXJjZT1ub3RpZmljYXR=
+pb25zIn0.3yo0oG58tXp9Nm52I3mLTLVFdqDYFCaA14N-no8jzoI" style=3D"color: #067d=
+f7; text-decoration: none;" target=3D"_blank">Vercel Community</a>.
+                         =20
+                          <p style=3D"color: #666666; font-family: Geist,-a=
+pple-system,system-ui,BlinkMacSystemFont,&quot;Segoe UI&quot; ,&quot;Roboto=
+&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantarell&quot;,&quot;Fi=
+ra Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&quot;,sans-serif;=
+ font-size: 14px; line-height: 24px; overflow-wrap: anywhere;">Copyright =
+=C2=A9 2025 <a href=3D"https://e1.knock.app/t/eyJhbGciOiJIUzI1NiIsInR5cCI6I=
+kpXVCJ9.eyJoc3QiOiJlMS5rbm9jay5hcHAiLCJpYXQiOjE3NDU4OTk1NDkxNzMwMDQsImlkeCI=
+6MCwibWlkIjoiMndPNHphNVhEdkdDajZmakVLdDZnTG1pbDAwIiwidXJsIjoiaHR0cHM6Ly92ZX=
+JjZWwuY29tP3V0bV9tZWRpdW09ZW1haWwmdXRtX3NvdXJjZT1ub3RpZmljYXRpb25zIn0.N4SF_=
+mCew0P0iGA7tui8qmyem06rjQiYZ44882goAXg" style=3D"color: #067df7; text-decor=
+ation: none;" target=3D"_blank">Vercel Inc.</a> All rights reserved.<br/>44=
+0 N Barranca Ave #4133 Covina, CA 91723</p><p style=3D"color: #666666; font=
+-family: Geist,-apple-system,system-ui,BlinkMacSystemFont,&quot;Segoe UI&qu=
+ot; ,&quot;Roboto&quot;,&quot;Oxygen&quot;,&quot;Ubuntu&quot;,&quot;Cantare=
+ll&quot;,&quot;Fira Sans&quot;,&quot;Droid Sans&quot;,&quot;Helvetica Neue&=
+quot;,sans-serif; font-size: 14px; line-height: 24px; overflow-wrap: anywhe=
+re;"><a href=3D"https://e1.knock.app/t/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9=
+.eyJoc3QiOiJlMS5rbm9jay5hcHAiLCJpYXQiOjE3NDU4OTk1NDkxNzMzNTcsImlkeCI6MCwibW=
+lkIjoiMndPNHphNVhEdkdDajZmakVLdDZnTG1pbDAwIiwidXJsIjoiaHR0cHM6Ly92ZXJjZWwuY=
+29tL2FjY291bnQvbm90aWZpY2F0aW9ucz91dG1fbWVkaXVtPWVtYWlsJnV0bV9zb3VyY2U9bm90=
+aWZpY2F0aW9ucyJ9.u0e3d6lk2O3VdFgIYW5FBn5XvO99EE2ntjm3qOG-bwc" style=3D"colo=
+r: #067df7; text-decoration: none;" target=3D"_blank">Manage your notificat=
+ion settings</a></p></p></div></td></tr></tbody></table></td></tr></tbody><=
+/table><style>
+  p {
+    color:#000;
+    font-family: Geist,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI=
+" ,"Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helveti=
+ca Neue",sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    overflow-wrap: anywhere;
+  }
+  .break-all {
+    color:#000;
+    font-family: Geist,-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI=
+" ,"Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helveti=
+ca Neue",sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    word-break: break-all
+  }
+  h1 {
+    color: #000;
+    font-family: Geist,-apple-system, BlinkMacSystemFont, "Segoe UI",=09"Ro=
+boto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neu=
+e",sans-serif;
+    font-size: 24px;
+    font-weight: normal;
+    margin: 30px 0;
+    padding: 0;
+   }
+  pre {
+    font-family: "Geist Mono",ui-monospace,SFMono-Regular,Menlo,Monaco,Cons=
+olas,"Liberation Mono","Courier New",monospace
+    width: 100%;
+    max-width: 465px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #171717;
+    border: 1px solid #e5e5e5;
+    padding: 20px;
+    border-radius: 6px;
+  }
+ .block-button.block-button--solid.block-button--sm {
+    background-color:#000;
+    border-radius:5px;
+    color: #fff;
+    display: inline-block;
+    font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI" ,"Ro=
+boto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neu=
+e",sans-serif;
+    font-size:14px;
+    font-weight:500;
+    line-height:50px;
+    text-align:center;
+    text-decoration:none;
+    width:200px;
+  }
+  strong {
+    color:#000;
+    font-weight:bold;
+  }
+  a {
+    color:#067df7;
+    text-decoration:none;
+  }
+  code.inline {
+    color:rgb(189,16,224);
+    text-decoration:none;
+    font-family:Menlo,Monaco,"Lucida Console","Liberation Mono","DejaVu San=
+s Mono","Bitstream Vera Sans Mono","Courier New",monospace,serif;
+    font-size:0.9em;
+  }
+  ul {
+    padding-left: 20px;
+  }
+  li, .usage {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",=09"Roboto",=
+"Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",san=
+s-serif;
+    font-size:14px;
+    line-height: 2em;
+    color:#000;
+  }
+</style><img src=3D"https://c1.knock.app/t/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX=
+VCJ9.eyJpYXQiOjE3NDU4OTk1NDkxNzM1ODcsIm1pZCI6IjJ3TzR6YTVYRHZHQ2o2ZmpFS3Q2Z0=
+xtaWwwMCJ9.kLpCa6KxGHhsJaWIzkKrWe6TPVryCO2tK5ZJZYJo4LA/k.png" class=3D"k-pn=
+g" width=3D"1px" height=3D"1px" role=3D"none"/></body></html>
+------=_Part_670673_846776991.1745899549299--

@@ -1,51 +1,33 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, make_response
-import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
+from flask import Flask, render_template, request, redirect, url_for, flash
+import joblib
 import os
-import numpy as np
+import email
+from email.header import decode_header
+import imaplib
+from werkzeug.utils import secure_filename
 from flask_cors import CORS
 
 app = Flask(__name__)
-app.secret_key = '123989'  # Set a secret key for session management
+app.secret_key = '123989'
 CORS(app, supports_credentials=True)
 
-# Initialize global variables for the model and vectorizer
-clf = None
-cv = None
+# Pretrained model and vectorizer paths
+MODEL_PATH = "spam_model.pkl"
+VECTORIZER_PATH = "count_vectorizer.pkl"
 
-def load_and_train_model():
-    global clf, cv
-    try:
-        # Load data from CSV
-        df = pd.read_csv("spam.csv", encoding="latin-1")
-        df.drop(['Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4'], axis=1, inplace=True)
-        
-        # Handle NaN values
-        df = df.dropna(subset=['message', 'class'])  # Drop rows where message or class is NaN
+clf = joblib.load(MODEL_PATH)
+cv = joblib.load(VECTORIZER_PATH)
 
-        # Features and Labels
-        df['label'] = df['class'].map({'ham': 0, 'spam': 1})
-        X = df['message']
-        y = df['label']
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-        if X.empty or y.empty:
-            raise ValueError("The training data is empty after cleaning.")
-
-        # Extract Features with CountVectorizer
-        cv = CountVectorizer()
-        X = cv.fit_transform(X)  # Fit the Data
-
-        # Naive Bayes Classifier
-        clf = MultinomialNB()
-        clf.fit(X, y)  # Train with all data
-        print(f"Model trained with {len(df)} entries.")
-    except Exception as e:
-        print(f"Error loading or training model: {e}")
+# Gmail credentials
+EMAIL = "your.email@gmail.com"
+APP_PASSWORD = "your_app_password"
 
 @app.after_request
 def add_csp(response):
-    # This allows any origin to embed your site in an iframe
     response.headers['Content-Security-Policy'] = "frame-ancestors *"
     return response
 
@@ -55,41 +37,41 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    global clf, cv
-    if clf is None or cv is None:  # Load and train model if not loaded
-        load_and_train_model()
+    message = request.form.get('message', '').strip()
+    if message:
+        vect = cv.transform([message])
+        prediction = clf.predict(vect)[0]
+        label = "Spam" if prediction == 1 else "Not Spam"
+        return render_template('index.html', prediction=label, message=message)
+    flash('Please enter a message to classify.', 'error')
+    return redirect(url_for('home'))
 
-    if request.method == 'POST':
-        message = request.form['message']
-        if message:
-            data = [message]
-            vect = cv.transform(data).toarray()
-            my_prediction = clf.predict(vect)
-            prediction_text = '1' if my_prediction[0] == 1 else '0'
-            print(f"Prediction for '{message}': {prediction_text}")
-            return render_template('index.html', prediction=my_prediction , mess=data)
-        else:
-            flash('Please enter a message to classify.', 'error')
-            return redirect(url_for('home'))
-
-@app.route('/add_data', methods=['GET', 'POST'])
-def add_data():
-    if request.method == 'POST':
-        message = request.form['message']
-        label = request.form['label']
-        new_data = {'class': label, 'message': message}
-
-        # Append the new data to the CSV file
-        df = pd.DataFrame([new_data])
-        df.to_csv("spam.csv", mode='a', header=not os.path.isfile("spam.csv"), index=False)
-
-        # Retrain the model with the new data
-        load_and_train_model()
-        
-        flash('New data added successfully and model retrained.', 'success')
+@app.route('/upload_eml', methods=['POST'])
+def upload_eml():
+    file = request.files.get('eml_file')
+    if not file or file.filename == '':
+        flash('No selected file.', 'error')
         return redirect(url_for('home'))
-    
-    return render_template('add_data.html')
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(file.filename))
+    file.save(filepath)
+
+    with open(filepath, 'rb') as f:
+        msg = email.message_from_binary_file(f)
+
+    body = ""
+    if msg.is_multipart():
+        for part in msg.walk():
+            if part.get_content_type() == "text/plain" and "attachment" not in str(part.get("Content-Disposition")):
+                body = part.get_payload(decode=True).decode(errors="ignore")
+                break
+    else:
+        body = msg.get_payload(decode=True).decode(errors="ignore")
+
+    vect = cv.transform([body])
+    prediction = clf.predict(vect)[0]
+    label = "Spam" if prediction == 1 else "Not Spam"
+    return render_template('index.html', prediction=label, message=body.strip())
 
 if __name__ == '__main__':
     app.run(debug=True)

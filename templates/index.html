@@ -1,181 +1,100 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Spam Detection System</title>
-  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  
+    <meta charset="UTF-8">
+    <title>Spam ⚠️ Detector for Text</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #eaf6ff;
+        }
+        .highlight {
+            background-color: #fff3cd;
+        }
+        .success-box {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .danger-box {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: none;
+        }
+    </style>
 </head>
-
 <body>
+<div class="container py-5">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <h2 class="text-center text-primary mb-4">Spam ⚠️ Detector for Text</h2>
 
-<!-- Navigation Bar -->
+            <form method="POST" action="{{ url_for('predict') }}">
+                <div class="mb-3">
+                    <textarea name="message" rows="4" class="form-control" placeholder="Type your message here..." required>{{ message if message else '' }}</textarea>
+                </div>
+                <div class="d-flex justify-content-center gap-3 mb-3">
+                    <button type="button" class="btn btn-warning" onclick="pasteText()">Paste</button>
+                    <button type="button" class="btn btn-info" onclick="clearText()">Clear</button>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger px-5">Predict</button>
+                </div>
+            </form>
 
+            <hr class="my-4">
 
+            <form method="POST" action="{{ url_for('upload_eml') }}" enctype="multipart/form-data">
+                <div class="text-center">
+                    <label class="form-label">OR Import Gmail Email using .eml File</label>
+                    <input type="file" name="eml_file" accept=".eml" class="form-control mb-3">
+                    <button type="submit" class="btn btn-success">Choose File</button>
+                </div>
+            </form>
 
-<!-- Modal Structure -->
-<div id="myMessageModal" class="my-modal my-hidden">
-    <div class="my-modal-content">
-        {% if prediction == 1 %}
-            <h2 style="color:red;">Looking Spam⚠️, Be safe</h2>
-        {% elif prediction == 0 %}
-            <h2 style="color:green;"><b>Not a Spam💚</b></h2>
-        {% endif %}
-        <p id="result_message" style="color:black ;"></p>
-        <button id="myCloseMessageBtn">Close</button>
-        <button id="train_button">Train with this message</button>
+            {% if prediction %}
+                <div class="mt-4 p-3 border rounded {% if prediction == 'Spam' %}danger-box{% else %}success-box{% endif %}">
+                    <h5>Prediction Result:</h5>
+                    <strong>{{ prediction }}</strong>
+                    {% if message %}
+                        <pre class="mt-2 bg-light p-2 border rounded">{{ message }}</pre>
+                    {% endif %}
+                </div>
+                <script>
+                    window.onload = function() {
+                        const result = '{{ prediction }}';
+                        const popup = document.createElement('div');
+                        popup.className = 'alert alert-' + (result === 'Spam' ? 'danger' : 'success') + ' popup';
+                        popup.textContent = 'Prediction: ' + result;
+                        document.body.appendChild(popup);
+                        popup.style.display = 'block';
+                        setTimeout(() => popup.style.display = 'none', 4000);
+                    };
+                </script>
+            {% endif %}
+
+        </div>
     </div>
 </div>
 
-<div class="login">
-    <h1>Spam⚠️ Detector for Text</h1>
-
-    <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data">
-        <div class="textarea-container">
-            <!-- Retain text in the textarea using server-side variable -->
-            <textarea id="message" name="message" rows="6" cols="50" required="required">{{ request.form.get('message') }}</textarea>
-            
-        </div>
-        <br>
-        <div class="button-div">
-            <button type="button" class="paste-button" onclick="pasteFromClipboard()">Paste</button>
-            <button type="button" onclick="clearText()" class="btn btn-secondary">Clear</button>
-        </div>
-        <br><br>
-
-        <!-- File Upload Section -->
-              
-        <div class="drag-drop">
-            <p>Drag and Drop a Text File Here</p>
-        </div>
-        
-        <div>
-            <h2>OR</h2>
-        </div>
-        <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(this)" />
-        <label for="fileInput">Choose File</label>  
-        
-        <!-- <button type="button" onclick="loadEmailContent()" class="btn btn-secondary">Import from Gmail</button> -->
-      
-
-        <br><br>
-        <button type="submit" class="btn btn-primary btn-block btn-large prediction-btn">Predict</button>
-        <div id="modalOverlay" onclick="closeModal()" style="display: none;"></div>
-        <div id="resultModal" style="display: none;">
-            <h2 id="resultMessage"></h2>
-            <button onclick="closeModal()">Close</button>
-        </div>
-    </form>
-  
-</div>
-
 <script>
-    let trimmedMessage = "";
-
-
-
-    function handleFileUpload(fileInput) {
-        const file = fileInput.files[0];
-        const messageBox = document.getElementById('message');
-
-        // Check file size (4 MB limit)
-        if (file.size > 4 * 1024 * 1024) {
-            alert("File size exceeds 4 MB. Please upload a smaller file.");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            messageBox.value = e.target.result; // Automatically paste text into the textarea
-        };
-        reader.readAsText(file);
-    }
-
-    function pasteFromClipboard() {
-        navigator.clipboard.readText()
-            .then(text => {
-                document.getElementById('message').value = text; // Paste clipboard text into textarea
-            })
-            .catch(err => {
-                console.error('Failed to read clipboard contents: ', err);
-            });
+    function pasteText() {
+        navigator.clipboard.readText().then(text => {
+            document.querySelector('textarea[name="message"]').value = text;
+        });
     }
 
     function clearText() {
-        document.getElementById('message').value = '';
+        document.querySelector('textarea[name="message"]').value = '';
     }
-
-    function showMessage() {
-        const resultMessage = document.getElementById("result_message");
-        const messageText = "{{mess}}";
-        trimmedMessage = messageText.substring(6, messageText.length - 6);
-        
-        if (trimmedMessage.length > 200) {
-            const trimmedMessage2 = trimmedMessage.substring(0, 200) + "..."; // Add "..." if it exceeds 200 characters
-            resultMessage.textContent = `${trimmedMessage2}`;
-          }
-        else{
-          resultMessage.textContent = `${trimmedMessage}`;
-        }
-        document.getElementById('myMessageModal').style.display = 'flex'; // Show the modal
-        document.getElementById('myMessageModal').classList.remove('my-hidden');
-    }
-
-    document.getElementById('myCloseMessageBtn').addEventListener('click', function() {
-        // Reset the page
-        window.location.href = "/";
-    });
-
-    var predictionExists = "{{prediction}}";
-    console.log("Prediction exists: ", predictionExists);
-    // Automatically show the message if prediction exists
-    window.onload = function() {
-        if (predictionExists) {
-            showMessage();
-        }
-    };
-
-    document.getElementById("train_button").onclick = function() {
-        // Store the trimmed message in session storage and redirect to add data page
-        sessionStorage.setItem("trainMessage", trimmedMessage);
-        window.location.href = "{{ url_for('add_data') }}";
-    };
-
-    const dragDropArea = document.querySelector(".drag-drop");
-const messageTextarea = document.getElementById("message");
-
-dragDropArea.addEventListener("dragover", (event) => {
-    event.preventDefault();
-    dragDropArea.classList.add("dragging");
-});
-
-dragDropArea.addEventListener("dragleave", () => {
-    dragDropArea.classList.remove("dragging");
-});
-
-dragDropArea.addEventListener("drop", (event) => {
-    event.preventDefault();
-    dragDropArea.classList.remove("dragging");
-
-    const file = event.dataTransfer.files[0];
-    if (file && file.type === "text/plain") {
-        const reader = new FileReader();
-        reader.onload = () => {
-            messageTextarea.value = reader.result;
-        };
-        reader.readAsText(file);
-    } else {
-        alert("Please drop a valid text file.");
-    }
-});
-
-
-
-   
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
