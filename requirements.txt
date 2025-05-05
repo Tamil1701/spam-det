@@ -1,7 +1,7 @@
-numpy
-flask
+numpy==1.16.6
+pandas==1.0.5
 scikit-learn==0.22.1
-pandas
-Werkzeug
-gunicorn
-flask-cors
+flask==1.1.2
+Werkzeug==1.0.1
+gunicorn==20.0.4
+flask-cors==3.0.8
